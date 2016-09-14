@@ -18,7 +18,7 @@ buildEnvironment = (setup) ->
 # @param [Integer] port              Port to listen
 # @param [Function] setup            Configurator to customize Mincer behavior
 #
-serveAssets = (port, warmup, environment) ->
+serveAssets = (port, root, warmup, environment) ->
   mincer = new Mincer.Server
 
   # Warmup before we actually run stuff in browsers
@@ -29,7 +29,7 @@ serveAssets = (port, warmup, environment) ->
     catch error
 
   server = connect()
-  server.use '/', (req, res) ->
+  server.use root, (req, res) ->
     try
       url   = unescape req.url
       asset = environment.findAsset url.substring(1)
@@ -102,6 +102,7 @@ task = (grunt, mode) ->
 
   # General settings
   assets_port = @config("assets.port") || 7358
+  assets_root = @config("assets.root") || "/"
   files       = {}
   options     = @config("options") || {}
   environment = buildEnvironment @config("assets.setup")
@@ -140,7 +141,7 @@ task = (grunt, mode) ->
 
   # Run and setup testem and assets servers
   testem = new Testem
-  assets = serveAssets assets_port, Object.keys(files), environment
+  assets = serveAssets assets_port, assets_root, Object.keys(files), environment
 
   #Wrap the output stream if the a report file is configured
   reporterCallback = wrapOutputStreamForReporting report_file if report_file
