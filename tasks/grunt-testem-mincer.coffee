@@ -32,8 +32,8 @@ serveAssets = (port, prefix, warmup, environment) ->
   server.use '/', (req, res) ->
     try
       url   = unescape req.url
-      regex = new RegExp(prefix + "/(.*)")
-      url   = url.replace(regex, (match, url) -> url)
+      regex = new RegExp("/(#{prefix})?(.*)")
+      url   = url.replace(regex, (match, prefix, url) -> url)
       asset = environment.findAsset url
 
       unless asset
