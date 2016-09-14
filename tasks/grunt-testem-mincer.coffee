@@ -33,8 +33,8 @@ serveAssets = (port, prefix, warmup, environment) ->
     try
       url   = unescape req.url
       regex = new RegExp(prefix + "/(.*)")
-      url   = url.replace(prefix, (match, url) -> url)
-      asset = environment.findAsset url.substring(1)
+      url   = url.replace(regex, (match, url) -> url)
+      asset = environment.findAsset url
 
       unless asset
         res.end "console.error('Not found: #{url}')"
